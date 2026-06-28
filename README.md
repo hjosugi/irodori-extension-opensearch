@@ -37,6 +37,30 @@ The Rust code keeps native ABI exports in `src/lib.rs`, shared buffer/JSON helpe
 | `awsSigV4` | AWS SigV4 | `token` |
 | `customDriverOptions` | Custom driver options | `password`, `token`, `privateKey`, `privateKeyPassphrase` |
 
+## Experience Metadata
+
+- Domains: `search`, `vector`
+- Result views: `searchHits`, `facets`, `json`, `table`, `vectorNeighbors`
+- Inspired by: `OpenSearch Dashboards Discover`, `OpenSearch aggregations`, `OpenSearch hybrid search`, `OpenSearch k-NN search`
+
+| Workflow | Result view | Templates |
+|---|---|---|
+| Discover documents | searchHits | search-query-string |
+| Facet breakdown | facets | search-facets |
+| Hybrid search | searchHits | search-hybrid |
+| Similarity search | vectorNeighbors | vector-similarity |
+| Filtered ANN search | vectorNeighbors | vector-filtered |
+| Collection or index health | table | vector-health |
+
+| Template | Label | Language | Result view |
+|---|---|---|---|
+| `search-query-string` | Query string search | `json` | `searchHits` |
+| `search-facets` | Terms facet | `json` | `facets` |
+| `search-hybrid` | Hybrid text and vector search | `json` | `searchHits` |
+| `vector-similarity` | kNN vector search | `json` | `vectorNeighbors` |
+| `vector-filtered` | Filtered kNN search | `json` | `vectorNeighbors` |
+| `vector-health` | Index mapping | `text` | `json` |
+
 ## ABI Calls
 
 The scaffold handles these JSON requests today:
