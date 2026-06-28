@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "visibility": "public",
+  "extensionId": "irodori.opensearch",
+  "connector": {
+    "id": "openSearch.connector",
+    "engine": "openSearch",
+    "label": "OpenSearch",
+    "aliases": [
+      "openSearch",
+      "open-search",
+      "OpenSearch"
+    ],
+    "defaultPort": 9200,
+    "wire": "search",
+    "module": "openSearch.driver",
+    "features": [
+      "metadata"
+    ]
+  },
+  "runtime": {
+    "abi": "irodori.connector.native.v1",
+    "module": {
+      "id": "openSearch.driver",
+      "path": "dist/native",
+      "platforms": [
+        "windowsX64",
+        "windowsArm64",
+        "macosX64",
+        "macosArm64",
+        "linuxX64",
+        "linuxArm64"
+      ]
+    },
+    "crate": "irodori_extension_opensearch",
+    "entrypoints": [
+      "irodori_extension_abi_version",
+      "irodori_connector_engine_json",
+      "irodori_extension_manifest_json",
+      "irodori_connector_config_json",
+      "irodori_connector_call_json",
+      "irodori_connector_free_buffer"
+    ],
+    "supportedCalls": [
+      "health",
+      "describe",
+      "manifest",
+      "config"
+    ],
+    "driverLinked": false
+  },
+  "source": {
+    "marketplaceId": "irodori.opensearch",
+    "repository": "https://github.com/hjosugi/irodori-extension-opensearch",
+    "knowledgeEngineStatus": "recognized_no_connector",
+    "adapter": null,
+    "adapterSha256": null
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "$schema": "https://irodori.dev/schemas/irodori.extension.schema.json",
+  "manifestVersion": 1,
+  "id": "irodori.opensearch",
+  "name": "OpenSearch Connector",
+  "version": "0.1.0",
+  "publisher": "irodori",
+  "description": "OpenSearch Connector contributes the OpenSearch database connector through the native connector ABI.",
+  "license": "MIT OR 0BSD",
+  "repository": "https://github.com/hjosugi/irodori-extension-opensearch",
+  "apiVersion": "0.1",
+  "runtime": "native",
+  "entry": "dist/native",
+  "permissions": [
+    "connections:read",
+    "connections:write",
+    "queries:run",
+    "metadata:read",
+    "native",
+    "connectors"
+  ],
+  "contributes": {
+    "connectors": [
+      {
+        "id": "openSearch.connector",
+        "engine": "openSearch",
+        "label": "OpenSearch",
+        "aliases": [
+          "openSearch",
+          "open-search",
+          "OpenSearch"
+        ],
+        "defaultPort": 9200,
+        "wire": "search",
+        "module": "openSearch.driver",
+        "features": [
+          "metadata"
+        ]
+      }
+    ]
+  },
+  "capabilities": {
+    "nativeModules": [
+      {
+        "id": "openSearch.driver",
+        "path": "dist/native",
+        "platforms": [
+          "windowsX64",
+          "windowsArm64",
+          "macosX64",
+          "macosArm64",
+          "linuxX64",
+          "linuxArm64"
+        ]
+      }
+    ]
+  },
+  "dev": {
+    "watch": [
+      "src",
+      "connector.config.json",
+      "irodori.extension.json"
+    ]
+  }
+}
