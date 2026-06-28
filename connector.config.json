@@ -370,6 +370,228 @@
         "openSearch"
       ],
       "customDriverOptions": true
+    },
+    "experience": {
+      "schemaVersion": 1,
+      "domains": [
+        "search",
+        "vector"
+      ],
+      "inspiredBy": [
+        "OpenSearch Dashboards Discover",
+        "OpenSearch aggregations",
+        "OpenSearch hybrid search",
+        "OpenSearch k-NN search"
+      ],
+      "resultViews": [
+        "searchHits",
+        "facets",
+        "json",
+        "table",
+        "vectorNeighbors"
+      ],
+      "objectTypes": [
+        "indexes",
+        "mappings",
+        "aliases",
+        "templates",
+        "analyzers",
+        "collections",
+        "vectors",
+        "payloadFields",
+        "partitions",
+        "namespaces"
+      ],
+      "workflows": [
+        {
+          "id": "search-discover",
+          "label": "Discover documents",
+          "description": "Search documents with query text, field filters, and highlights.",
+          "resultView": "searchHits",
+          "templateIds": [
+            "search-query-string"
+          ]
+        },
+        {
+          "id": "search-facets",
+          "label": "Facet breakdown",
+          "description": "Build terms and date facets for a filtered result set.",
+          "resultView": "facets",
+          "templateIds": [
+            "search-facets"
+          ]
+        },
+        {
+          "id": "search-hybrid",
+          "label": "Hybrid search",
+          "description": "Blend text relevance with vector nearest-neighbor search.",
+          "resultView": "searchHits",
+          "templateIds": [
+            "search-hybrid"
+          ]
+        },
+        {
+          "id": "vector-similarity-search",
+          "label": "Similarity search",
+          "description": "Search nearest neighbors from a pasted vector or embedding variable.",
+          "resultView": "vectorNeighbors",
+          "templateIds": [
+            "vector-similarity"
+          ]
+        },
+        {
+          "id": "vector-filtered-search",
+          "label": "Filtered ANN search",
+          "description": "Combine vector similarity with metadata or scalar filters.",
+          "resultView": "vectorNeighbors",
+          "templateIds": [
+            "vector-filtered"
+          ]
+        },
+        {
+          "id": "vector-health",
+          "label": "Collection or index health",
+          "description": "Inspect vector count, dimensionality, metric, shard, and index status.",
+          "resultView": "table",
+          "templateIds": [
+            "vector-health"
+          ]
+        }
+      ],
+      "queryTemplates": [
+        {
+          "id": "search-query-string",
+          "label": "Query string search",
+          "language": "json",
+          "description": "Search all mapped fields and highlight matched text.",
+          "insertText": "{\n  \"query\": {\n    \"query_string\": {\n      \"query\": \"$query\"\n    }\n  },\n  \"highlight\": {\n    \"fields\": { \"*\": {} }\n  },\n  \"size\": 25\n}",
+          "parameters": [
+            {
+              "id": "query",
+              "label": "Search query",
+              "type": "string"
+            }
+          ],
+          "resultView": "searchHits"
+        },
+        {
+          "id": "search-facets",
+          "label": "Terms facet",
+          "language": "json",
+          "description": "Return a terms aggregation for a field.",
+          "insertText": "{\n  \"size\": 0,\n  \"aggs\": {\n    \"by_field\": {\n      \"terms\": { \"field\": \"$field\", \"size\": 20 }\n    }\n  }\n}",
+          "parameters": [
+            {
+              "id": "field",
+              "label": "Facet field",
+              "type": "string"
+            }
+          ],
+          "resultView": "facets"
+        },
+        {
+          "id": "search-hybrid",
+          "label": "Hybrid text and vector search",
+          "language": "json",
+          "description": "Keep a starter shape for combining text relevance with vector search.",
+          "insertText": "{\n  \"query\": {\n    \"bool\": {\n      \"must\": [\n        { \"match\": { \"$textField\": \"$query\" } }\n      ]\n    }\n  },\n  \"knn\": {\n    \"field\": \"embedding\",\n    \"query_vector\": $vector,\n    \"k\": 10,\n    \"num_candidates\": 100\n  }\n}",
+          "parameters": [
+            {
+              "id": "textField",
+              "label": "Text field",
+              "type": "string"
+            },
+            {
+              "id": "query",
+              "label": "Search query",
+              "type": "string"
+            },
+            {
+              "id": "vector",
+              "label": "Query vector",
+              "type": "json"
+            }
+          ],
+          "resultView": "searchHits"
+        },
+        {
+          "id": "vector-similarity",
+          "label": "kNN vector search",
+          "language": "json",
+          "description": "Search nearest vectors using a dense-vector field.",
+          "insertText": "{\n  \"knn\": {\n    \"field\": \"embedding\",\n    \"query_vector\": $vector,\n    \"k\": 10,\n    \"num_candidates\": 100\n  }\n}",
+          "parameters": [
+            {
+              "id": "vector",
+              "label": "Query vector",
+              "type": "json"
+            }
+          ],
+          "resultView": "vectorNeighbors"
+        },
+        {
+          "id": "vector-filtered",
+          "label": "Filtered kNN search",
+          "language": "json",
+          "description": "Combine kNN search with a metadata filter.",
+          "insertText": "{\n  \"knn\": {\n    \"field\": \"embedding\",\n    \"query_vector\": $vector,\n    \"k\": 10,\n    \"num_candidates\": 100,\n    \"filter\": { \"term\": { \"$field\": \"$value\" } }\n  }\n}",
+          "parameters": [
+            {
+              "id": "vector",
+              "label": "Query vector",
+              "type": "json"
+            },
+            {
+              "id": "field",
+              "label": "Filter field",
+              "type": "string"
+            },
+            {
+              "id": "value",
+              "label": "Filter value",
+              "type": "string"
+            }
+          ],
+          "resultView": "vectorNeighbors"
+        },
+        {
+          "id": "vector-health",
+          "label": "Index mapping",
+          "language": "text",
+          "description": "Inspect vector mapping and index settings.",
+          "insertText": "GET /$index/_mapping",
+          "parameters": [
+            {
+              "id": "index",
+              "label": "Index",
+              "type": "string"
+            }
+          ],
+          "resultView": "json"
+        }
+      ],
+      "inspectorHints": [
+        {
+          "id": "search-mapping",
+          "label": "Mapping inspector",
+          "description": "Show analyzer, type, and fielddata/doc_values availability per field."
+        },
+        {
+          "id": "search-facetable",
+          "label": "Facet suggestions",
+          "description": "Suggest keyword, numeric, boolean, and date fields for facets."
+        },
+        {
+          "id": "vector-dimension",
+          "label": "Dimension badge",
+          "description": "Surface vector dimension and distance metric beside each collection or index."
+        },
+        {
+          "id": "vector-payload",
+          "label": "Payload fields",
+          "description": "Show filterable metadata fields before composing a filtered search."
+        }
+      ]
     }
   },
   "runtime": {
