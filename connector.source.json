@@ -76,7 +76,7 @@
     "customDriverOptions": true
   },
   "runtime": {
-    "driverLinked": false
+    "driverLinked": true
   },
   "source": {
     "knowledgeEngineStatus": "recognized_no_connector",
