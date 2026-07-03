@@ -524,13 +524,7 @@ fn rows_from_json(value: Value, cap: usize) -> QueryOutput {
 
 fn build_url(request: &Value) -> String {
     let host = option_string(request, &["host", "endpoint"]).unwrap_or_else(|| "127.0.0.1".into());
-    let port = option_string(request, &["port"]).unwrap_or_else(|| {
-        if ENGINE == "opensearch" {
-            "9200".into()
-        } else {
-            "9200".into()
-        }
-    });
+    let port = option_string(request, &["port"]).unwrap_or_else(|| "9200".into());
     let scheme = if bool_option(request, &["tls", "ssl"]).unwrap_or(false) {
         "https"
     } else {
